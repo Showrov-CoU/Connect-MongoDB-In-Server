@@ -36,9 +36,10 @@ const productDetails = new mongoose.Schema({
     default: Date.now,
   },
 });
-
+//! Model
 const Product = mongoose.model("allProducts", productDetails);
 
+//! CREATE Product
 app.post("/productRoute", async (req, res) => {
   try {
     // const createProduct = new Product({
@@ -75,6 +76,33 @@ app.post("/productRoute", async (req, res) => {
   }
 });
 
+//! READ Product
+app.get("/productRoute/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    // const productData = await Product.findOne({ _id: id }).select({
+    //   Title: 1,
+    //   Description: 1,
+    //   _id: 0,
+    // });
+    const productData = await Product.findOne(
+      { _id: id },
+      { Title: 1, Price: 1, _id: 0 }
+    );
+    if (productData) {
+      res.status(200).send({ productData });
+    } else {
+      res.status(404).send({
+        message: "Product Not Found",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+});
+//! Server Section
 const port = 3000;
 app.listen(port, async () => {
   console.log(`server is running on port ${port}`);
