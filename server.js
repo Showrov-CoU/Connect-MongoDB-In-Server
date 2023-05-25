@@ -131,6 +131,40 @@ app.delete("/productRoute/:id", async (req, res) => {
   }
 });
 
+//! Update Product
+app.put("/productRoute/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const updateData = await Product.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          Title: req.body.title,
+          Price: req.body.price,
+          Description: req.body.description,
+        },
+      },
+      { new: true }
+    );
+    if (updateData) {
+      res.status(200).send({
+        success: true,
+        data: updateData,
+        message: "Successfully Updated",
+      });
+    } else {
+      res.status(404).send({
+        message: "Product Not Found",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 //! Server Section
 const port = 3000;
 app.listen(port, async () => {
